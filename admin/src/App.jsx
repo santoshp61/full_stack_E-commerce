@@ -8,12 +8,14 @@ import Sidebar from "./components/Sidebar";
 import Login from "./components/Login";
 import { ToastContainer } from 'react-toastify';
 
-export const backendUrl = import.meta.env.VITE_BACKEND_URL
-export const currency = "₹"
+export const backendUrl = "http://localhost:4000"
+export const currency = "Rs"
+
+console.log("Backend URL:", backendUrl)
 
 
 const App = () => {
-  const [token, setToken] = useState( localStorage.getItem("token") ? localStorage.getItem("token") : "")
+  const [token, setToken] = useState(localStorage.getItem("token") ? localStorage.getItem("token") : "")
 
   useEffect(() => {
     localStorage.setItem("token", token);
@@ -21,9 +23,9 @@ const App = () => {
 
   return (
     <div className='min-h-screen w-full'>
-      <ToastContainer/>
+      <ToastContainer />
       {token === ""
-        ? <Login setToken={setToken}/>
+        ? <Login setToken={setToken} />
         : <>
           {" "}
           <Navbar setToken={setToken} />
@@ -33,7 +35,7 @@ const App = () => {
             <div className='py-5 w-full'>
               <Routes>
                 <Route path='/add' element={<Add token={token} />} />
-                <Route path='/list' element={<List token={token}/>} />
+                <Route path='/list' element={<List token={token} />} />
                 <Route path='/orders' element={<Orders token={token} />} />
               </Routes>
             </div>
