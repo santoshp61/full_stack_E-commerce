@@ -58,16 +58,6 @@
 
 <hr>
 
-<h2>🛠 Installation</h2>
-
-<h3>1. Clone the Repository</h3>
-<pre>
-<code>
-git clone https://github.com/adarshupadhyay21/shopease.git
-cd shopease
-</code>
-</pre>
-
 <h3>2. Install Dependencies</h3>
 
 <strong>Frontend</strong>
