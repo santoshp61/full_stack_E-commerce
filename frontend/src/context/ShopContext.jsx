@@ -1,29 +1,31 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
-import {  toast } from 'react-toastify';
- 
+import { toast } from 'react-toastify';
+
 export const ShopContext = createContext();
 
-const ShopContextProvider = (props)=>{
-    const currency = "₹"
-    const delivery_fee = 20; 
-    const backendUrl = import.meta.env.VITE_BACKEND_URL
-    const [search , setSearch] = useState('');
-    const [showSearch, setShowSearch] = useState(false);
-    const [cartItems, setCartItems] = useState({});
-    const [products, setProducts] = useState([]);
-    const [token, setToken] = useState("");
+const ShopContextProvider = (props) => {
+  const currency = "Rs"
+  const delivery_fee = 20;
 
-    const navigate = useNavigate();
+  const backendUrl = "http://localhost:5000";
+  /*const backendUrl = import.meta.env.VITE_BACKEND_URL*/
+  const [search, setSearch] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+  const [cartItems, setCartItems] = useState({});
+  const [products, setProducts] = useState([]);
+  const [token, setToken] = useState("");
+
+  const navigate = useNavigate();
 
 
-    const addToCart = async (itemId, size) => {
-        if (!size) {
-          toast.error("Size not select!");
-          return;
-        }
-        let cartData = structuredClone(cartItems);
+  const addToCart = async (itemId, size) => {
+    if (!size) {
+      toast.error("Size not select!");
+      return;
+    }
+    let cartData = structuredClone(cartItems);
 
     if (cartData[itemId]) {
       if (cartData[itemId][size]) {
@@ -39,7 +41,7 @@ const ShopContextProvider = (props)=>{
 
     if (token) {
       try {
-        await axios.post( backendUrl + "/api/cart/add",{ itemId, size },{ headers: { token } }
+        await axios.post(backendUrl + "/api/cart/add", { itemId, size }, { headers: { token } }
         );
       } catch (error) {
         console.log(error);
@@ -70,7 +72,7 @@ const ShopContextProvider = (props)=>{
     setCartItems(cartData);
     if (token) {
       try {
-        await axios.post(backendUrl + "/api/cart/update",{ itemId, size, quantity },{ headers: { token } } );
+        await axios.post(backendUrl + "/api/cart/update", { itemId, size, quantity }, { headers: { token } });
       } catch (error) {
         console.log(error);
         toast.error(error.message);
@@ -103,7 +105,7 @@ const ShopContextProvider = (props)=>{
       if (response.data.success) {
         setProducts(response.data.products);
       }
-      else{
+      else {
         toast.error(response.data.message)
       }
     } catch (error) {
@@ -114,7 +116,7 @@ const ShopContextProvider = (props)=>{
 
   const getUserCart = async (token) => {
     try {
-      const response = await axios.post(backendUrl + "/api/cart/get",{}, {headers: { token }});
+      const response = await axios.post(backendUrl + "/api/cart/get", {}, { headers: { token } });
 
       if (response.data.success) {
         setCartItems(response.data.cartData);
@@ -125,29 +127,29 @@ const ShopContextProvider = (props)=>{
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getProductsData()
-  },[])
+  }, [])
 
   useEffect(() => {
     if (!token && localStorage.getItem("token")) {
       setToken(localStorage.getItem("token"));
       getUserCart(localStorage.getItem("token"));
-  
+
     }
   }, []);
 
-    const value = {
-        products, currency , delivery_fee , search , setSearch ,showSearch,setShowSearch,
-        cartItems, addToCart, getCartCount, updateQuantity , getCartAmount, navigate,
-        backendUrl , setToken ,token , setCartItems
-    }
+  const value = {
+    products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch,
+    cartItems, addToCart, getCartCount, updateQuantity, getCartAmount, navigate,
+    backendUrl, setToken, token, setCartItems
+  }
 
-    return(
-        <ShopContext.Provider value={value}>
-        {props.children}
-        </ShopContext.Provider>
-    )
+  return (
+    <ShopContext.Provider value={value}>
+      {props.children}
+    </ShopContext.Provider>
+  )
 }
 
 
