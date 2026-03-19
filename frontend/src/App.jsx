@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home";
-import Collection from "./Pages/Collection"
+import Collection from "./Pages/Collection";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Product from "./Pages/Product";
@@ -12,10 +12,15 @@ import Orders from "./Pages/Orders";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Don't forget the CSS!
 import Verify from "./Pages/Verify";
+import { ShopContext } from "./context/ShopContext";
 
 const App = () => {
+  // Fixed: Removed the semicolon from inside the parentheses
+  const { token } = useContext(ShopContext);
+
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
       <ToastContainer />
@@ -23,7 +28,7 @@ const App = () => {
       <SearchBar />
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/collection' element={<Collection/>} />
+        <Route path='/collection' element={<Collection />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/product/:productId' element={<Product />} />
@@ -31,10 +36,10 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/place-order' element={<PlaceOrder />} />
         <Route path='/orders' element={<Orders />} />
-        <Route path='/verify' element={<Verify/>} />
+        <Route path='/verify' element={<Verify />} />
       </Routes>
       <Footer />
-    </div>
+    </div> // Moved this closing div BEFORE the closing brace of the component
   );
 };
 

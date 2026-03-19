@@ -15,10 +15,10 @@ const Navbar = () => {
     } = useContext(ShopContext);
 
     const logout = () => {
-        navigate("/login");
-        localStorage.removeItem("token");
-        setToken("");
-        setCartItems({});
+        localStorage.removeItem("token"); // Clear storage
+        setToken("");                     // Clear state
+        setCartItems({});                 // Clear cart
+        navigate("/login");               // Then move
     };
     return (
         <header>
@@ -94,7 +94,7 @@ const Navbar = () => {
                             {getCartCount()}
                         </p>
                     </Link>
-                    
+
                     {/* -------menu icon------- */}
                     <img
                         onClick={() => setOpenModal(true)}

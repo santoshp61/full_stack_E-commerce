@@ -1,30 +1,36 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ShopContext } from "../context/ShopContext";
 
 // Ensure this matches your backend port (check your backend terminal!)
 const backendUrl = "http://localhost:5000";
 
-const Login = ({ setToken }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { setToken, navigate, backendUrl } = useContext(ShopContext);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      // This calls the 'adminLogin' function you just shared
-      const response = await axios.post(`${backendUrl}/api/user/admin`, { email, password });
+      const response = await axios.post('http://localhost:5000/api/user/admin', { email, password });
 
       if (response.data.success) {
+        // 1. Set the token in your State
         setToken(response.data.token);
+
+        // 2. Save it to LocalStorage so you don't get logged out on refresh
         localStorage.setItem('token', response.data.token);
-        toast.success("Admin Login Successful");
+
+        toast.success("Login Successful!");
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Server Error. Is the backend on Port 4000?");
+      toast.error(error.message);
     }
   };
 
