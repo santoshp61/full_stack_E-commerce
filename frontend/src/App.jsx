@@ -39,7 +39,7 @@ const App = () => {
         <Route path='/verify' element={<Verify />} />
       </Routes>
       <Footer />
-    </div> // Moved this closing div BEFORE the closing brace of the component
+    </div>
   );
 };
 
