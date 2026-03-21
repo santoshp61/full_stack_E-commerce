@@ -6,11 +6,11 @@ import ProductItem from "./ProductItem";
 const LatestCollections = () => {
   const { products } = useContext(ShopContext);
   const [latestProducts, setLatestProducts] = useState([]);
-
   useEffect(() => {
     setLatestProducts(products.slice(0, 10));
   }, [products]);
 
+  console.log("Context Value Check:", products);
   return (
     <section className='my-10'>
       <div className='text-center py-8 text-3xl'>

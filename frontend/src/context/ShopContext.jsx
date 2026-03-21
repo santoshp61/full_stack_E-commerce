@@ -144,6 +144,7 @@ const ShopContextProvider = (props) => {
     cartItems, addToCart, getCartCount, updateQuantity, getCartAmount, navigate,
     backendUrl, setToken, token, setCartItems
   }
+  console.log("Internal Context Check:", products);
 
   return (
     <ShopContext.Provider value={value}>
