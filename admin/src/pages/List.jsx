@@ -9,7 +9,7 @@ const List = ({ token }) => {
 
   const fetchList = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/product/list`, {
+      const response = await axios.get('http://localhost:5000/api/user/admin', {
         headers: { token },
       });
 
