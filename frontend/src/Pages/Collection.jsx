@@ -5,7 +5,7 @@ import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
 
 const Collection = () => {
-  const { products, search, showSearch} =useContext(ShopContext);
+  const { products, search, showSearch } = useContext(ShopContext);
   const [showFilters, setShowFilters] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCaterogy] = useState([]);
@@ -17,7 +17,7 @@ const Collection = () => {
       setCaterogy((prev) => prev.filter((item) => item !== e.target.value));
     } else {
       setCaterogy((prev) => [...prev, e.target.value]);
-    } 
+    }
   };
   const toggleSubCategory = (e) => {
     if (subCategory.includes(e.target.value)) {
@@ -50,15 +50,16 @@ const Collection = () => {
     setFilterProducts(productsCopy);
   };
 
+  // Fix: Sort the ALREADY filtered products, not the original products list
   const sortProduct = () => {
-    let filterProductsCopy = products.slice();
+    let fpCopy = filterProducts.slice();
 
     switch (sortType) {
       case "low-high":
-        setFilterProducts(filterProductsCopy.sort((a, b) => a.price - b.price));
+        setFilterProducts(fpCopy.sort((a, b) => a.price - b.price));
         break;
       case "high-low":
-        setFilterProducts(filterProductsCopy.sort((a, b) => b.price - a.price));
+        setFilterProducts(fpCopy.sort((a, b) => b.price - a.price));
         break;
       default:
         applyFilter();
@@ -66,10 +67,12 @@ const Collection = () => {
     }
   };
 
+  // Combine these logic calls to ensure they happen in the right order
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch,products]);
+  }, [category, subCategory, search, showSearch, products]);
 
+  // When sortType changes, we sort the products currently in state
   useEffect(() => {
     sortProduct();
   }, [sortType]);
@@ -174,7 +177,13 @@ const Collection = () => {
         {/* ---------Map products=---------- */}
         <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
           {filterProducts.map((item, index) => (
-            <ProductItem key={index} {...item} />
+            <ProductItem
+              key={index}
+              id={item._id}  // Pass the MongoDB _id as 'id'
+              name={item.name}
+              image={item.image}
+              price={item.price}
+            />
           ))}
         </div>
       </div>

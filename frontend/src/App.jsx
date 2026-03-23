@@ -13,17 +13,20 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'; // Don't forget the CSS!
 import Verify from "./Pages/Verify";
+import { ShopContext } from "./context/ShopContext";
 
 const App = () => {
+  // Fixed: Removed the semicolon from inside the parentheses
+  const { token } = useContext(ShopContext);
+
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
       <ToastContainer />
       <Navbar />
       <SearchBar />
       <Routes>
-        <Route path='/' element={<Add token={token} />} />
         <Route path='/' element={<Home />} />
         <Route path='/collection' element={<Collection />} />
         <Route path='/about' element={<About />} />
