@@ -83,43 +83,21 @@ const loginUser = async (req, res, next) => {
 ////route for admin login
 const adminLogin = async (req, res) => {
   try {
-
     const { email, password } = req.body;
 
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-
-      /*const token = jwt.sign(
-        { role: "admin" },
-        process.env.JWT_SECRET
-      );*/
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
       const token = jwt.sign(email + password, process.env.JWT_SECRET);
-      res.json({ success: true, token });
-
-      res.json({
-        success: true,
-        token
-      });
-
+      // Add 'return' here to stop the function
+      return res.json({ success: true, token });
     } else {
-
-      res.json({
-        success: false,
-        message: "Invalid Credentials"
-      });
-
+      // Add 'return' here to stop the function
+      return res.json({ success: false, message: "Invalid Credentials" });
     }
 
   } catch (error) {
-
-    res.json({
-      success: false,
-      message: error.message
-    });
-
+    console.log(error);
+    // Ensure this only runs if no other res.json has been sent
+    return res.json({ success: false, message: error.message });
   }
-};;
-
+}
 export { registerUser, loginUser, adminLogin };
