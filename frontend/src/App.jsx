@@ -42,5 +42,7 @@ const App = () => {
     </div>
   );
 };
+// App.jsx
+export const backendUrl = "http://localhost:5000" // No slash at the end
 
 export default App;

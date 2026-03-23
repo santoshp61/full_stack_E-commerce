@@ -130,6 +130,34 @@ const updateStatus = async (req, res, next) => {
   }
 };
 
+// backend/controllers/orderController.js
+
+const cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+
+    // Find the order first to check its status
+    const order = await orderModel.findById(orderId);
+
+    if (!order) {
+      return res.json({ success: false, message: "Order not found" });
+    }
+
+    // Security: Only allow cancellation if it hasn't been processed yet
+    if (order.status === 'Order Placed') {
+      await orderModel.findByIdAndDelete(orderId);
+      res.json({ success: true, message: "Order cancelled successfully" });
+    } else {
+      res.json({ success: false, message: "Cannot cancel order. It is already " + order.status });
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+}
+
+
 
 //Verify stripe payment
 const verifyStripePayment = async (req, res, next) => {
@@ -153,6 +181,7 @@ const verifyStripePayment = async (req, res, next) => {
 
 export {
   placeOrder,
+  cancelOrder,
   placeOrderStripe,
   placeOrderRazorpay,
   allOrders,

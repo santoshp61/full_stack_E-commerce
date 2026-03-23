@@ -13,12 +13,15 @@ const Orders = ({ token }) => {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/user/admin', {}, { headers: { token } });
+      // FIX 1: Change endpoint from '/api/user/admin' to '/api/order/list'
+      // FIX 2: Use the backendUrl variable
+      const res = await axios.post(backendUrl + '/api/order/list', {}, { headers: { token } });
 
       if (res.data.success) {
+        // Use response.data.orders (ensure the key matches your backend controller)
         setOrders(res.data.orders.reverse());
       } else {
-        toast.error(res.data.message)
+        toast.error(res.data.message);
       }
     } catch (error) {
       console.log(error);
@@ -28,10 +31,17 @@ const Orders = ({ token }) => {
 
   const handleStatus = async (e, orderId) => {
     try {
-      const res = await axios.post(backendUrl + "/api/order/status", { orderId, status: e.target.value }, { headers: { token } });
+      // FIX 3: Ensure the status update route is correct
+      const res = await axios.post(backendUrl + "/api/order/status",
+        { orderId, status: e.target.value },
+        { headers: { token } }
+      );
 
       if (res.data.success) {
-        await fetchAllOrders();
+        await fetchAllOrders(); // Refresh the list after update
+        toast.success(res.data.message);
+      } else {
+        toast.error(res.data.message);
       }
     } catch (error) {
       console.log(error);

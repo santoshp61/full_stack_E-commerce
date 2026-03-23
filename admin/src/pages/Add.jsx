@@ -19,6 +19,7 @@ const Add = ({ token }) => {
   const [bestseller, setBestseller] = useState(false)
   const [sizes, setSizes] = useState([])
 
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 

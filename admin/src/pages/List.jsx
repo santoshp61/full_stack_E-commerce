@@ -1,3 +1,4 @@
+/*http://localhost:5000/api/user/admin*/
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { backendUrl, currency } from "../App";
@@ -7,11 +8,11 @@ import "react-toastify/dist/ReactToastify.css";
 const List = ({ token }) => {
   const [list, setList] = useState([]);
 
+  // admin/src/pages/List.jsx
   const fetchList = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/user/admin', {
-        headers: { token },
-      });
+      // Ensure this matches your backend route exactly
+      const response = await axios.get(backendUrl + '/api/product/list');
 
       if (response.data.success) {
         setList(response.data.products);
@@ -19,10 +20,10 @@ const List = ({ token }) => {
         toast.error(response.data.message);
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Failed to fetch products");
+      console.log(error);
+      toast.error(error.message);
     }
-  };
+  }
 
   const removeProduct = async (id) => {
     try {
