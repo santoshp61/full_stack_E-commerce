@@ -91,10 +91,12 @@ const adminLogin = async (req, res) => {
       password === process.env.ADMIN_PASSWORD
     ) {
 
-      const token = jwt.sign(
+      /*const token = jwt.sign(
         { role: "admin" },
         process.env.JWT_SECRET
-      );
+      );*/
+      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      res.json({ success: true, token });
 
       res.json({
         success: true,
