@@ -19,10 +19,10 @@ const Contact = () => {
         <div className='flex flex-col justify-between items-start gap-6'>
           <p className='font-semibold text-xl text-gray-600'>Our Store</p>
           <p className='text-gray-500'>
-           11/18 MG. Marg<br /> Civil lines Prayaraj 
+            Thamel,Kathmandu<br /> On Main Road
           </p>
           <p className='text-gray-600'>
-            Tel:(0532) 98XXXX  <br /> Email: shopease@gmail.com
+            Tel:(01) 123456 <br /> Email: shopease@gmail.com
           </p>
           <p className='font-semibold text-xl text-gray-600'>
             Careers at ShopEase
