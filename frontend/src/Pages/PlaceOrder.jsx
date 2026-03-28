@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/assets";
@@ -10,7 +10,6 @@ const PlaceOrder = () => {
   const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext);
   const [method, setMethod] = useState("cod");
 
-  // Removed 'email' from the state
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,6 +18,22 @@ const PlaceOrder = () => {
     district: "Kathmandu",
     phone: "",
   });
+
+  // Fetch saved address on load
+  useEffect(() => {
+    const fetchUserAddress = async () => {
+      if (!token) return;
+      try {
+        const response = await axios.post(backendUrl + '/api/user/get-profile', {}, { headers: { token } });
+        if (response.data.success && response.data.user.address) {
+          setFormData(response.data.user.address);
+        }
+      } catch (error) {
+        console.error("Error fetching address:", error);
+      }
+    };
+    fetchUserAddress();
+  }, [token, backendUrl]);
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -53,17 +68,19 @@ const PlaceOrder = () => {
         amount: getCartAmount() + delivery_fee,
       };
 
+      // Handle different payment methods
       switch (method) {
         case "cod":
           const res = await axios.post(backendUrl + "/api/order/place", orderData, { headers: { token } });
           if (res.data.success) {
             setCartItems({});
             navigate("/orders");
-            toast.success("Order Placed Successfully!");
+            toast.success("Order Placed! Address saved.");
           } else {
             toast.error(res.data.message);
           }
           break;
+
         case 'stripe':
           const stripe = await axios.post(backendUrl + "/api/order/stripe", orderData, { headers: { token } });
           if (stripe.data.success) {
@@ -73,6 +90,7 @@ const PlaceOrder = () => {
             toast.error(stripe.data.message);
           }
           break;
+
         default:
           break;
       }
@@ -87,7 +105,6 @@ const PlaceOrder = () => {
       <form onSubmit={onSubmitHandler} className='max-w-[1100px] mx-auto flex flex-col lg:flex-row justify-between gap-6 pt-10 px-4'>
 
         <div className='flex-1 flex flex-col gap-6'>
-
           <div className="bg-white p-6 rounded shadow-sm border border-gray-100">
             <div className='mb-6'>
               <Title text1={"DELIVERY"} text2={"INFORMATION"} />
@@ -103,16 +120,14 @@ const PlaceOrder = () => {
                 <input required onChange={onChangeHandler} name='lastName' value={formData.lastName} className='border border-gray-300 rounded py-2 px-3.5 w-full focus:border-orange-400 outline-none text-sm' type='text' placeholder='Last name' />
               </div>
 
-              {/* Email input has been removed from here */}
-
-              <input required onChange={onChangeHandler} name='tole' value={formData.tole} className='border border-gray-300 rounded py-2 px-3.5 w-full focus:border-orange-400 outline-none text-sm' type='text' placeholder='Tole / Ward No. (e.g., Koteshwor-32)' />
+              <input required onChange={onChangeHandler} name='tole' value={formData.tole} className='border border-gray-300 rounded py-2 px-3.5 w-full focus:border-orange-400 outline-none text-sm' type='text' placeholder='Tole / Ward No.' />
 
               <div className='flex gap-3'>
-                <input required onChange={onChangeHandler} name='area' value={formData.area} className='border border-gray-300 rounded py-2 px-3.5 w-full focus:border-orange-400 outline-none text-sm' type='text' placeholder='Area (e.g., New Baneshwor)' />
+                <input required onChange={onChangeHandler} name='area' value={formData.area} className='border border-gray-300 rounded py-2 px-3.5 w-full focus:border-orange-400 outline-none text-sm' type='text' placeholder='Area' />
                 <input readOnly name='district' value="Kathmandu" className='border border-gray-200 bg-gray-50 rounded py-2 px-3.5 w-full cursor-not-allowed text-gray-400 text-sm' type='text' />
               </div>
 
-              <input required onChange={onChangeHandler} name='phone' value={formData.phone} className='border border-gray-300 rounded py-2 px-3.5 w-full focus:border-orange-400 outline-none text-sm' type='number' placeholder='Phone Number (98XXXXXXXX)' />
+              <input required onChange={onChangeHandler} name='phone' value={formData.phone} className='border border-gray-300 rounded py-2 px-3.5 w-full focus:border-orange-400 outline-none text-sm' type='number' placeholder='Phone Number' />
             </div>
           </div>
 
@@ -122,6 +137,7 @@ const PlaceOrder = () => {
             </div>
 
             <div className='flex flex-col sm:flex-row gap-4'>
+              {/* Stripe Option */}
               <div onClick={() => setMethod("stripe")} className={`flex items-center gap-4 border p-3 px-4 cursor-pointer rounded transition-all flex-1 ${method === "stripe" ? "border-orange-500 bg-orange-50" : "hover:border-gray-400"}`}>
                 <div className={`min-w-4 h-4 border-2 rounded-full flex items-center justify-center ${method === "stripe" ? "border-orange-500" : "border-gray-300"}`}>
                   {method === "stripe" && <div className="w-2 h-2 bg-orange-500 rounded-full"></div>}
@@ -129,6 +145,7 @@ const PlaceOrder = () => {
                 <img className='h-5' src={assets.stripe_logo} alt='stripe' />
               </div>
 
+              {/* COD Option */}
               <div onClick={() => setMethod("cod")} className={`flex items-center gap-4 border p-3 px-4 cursor-pointer rounded transition-all flex-1 ${method === "cod" ? "border-orange-500 bg-orange-50" : "hover:border-gray-400"}`}>
                 <div className={`min-w-4 h-4 border-2 rounded-full flex items-center justify-center ${method === "cod" ? "border-orange-500" : "border-gray-300"}`}>
                   {method === "cod" && <div className="w-2 h-2 bg-orange-500 rounded-full"></div>}
@@ -148,7 +165,6 @@ const PlaceOrder = () => {
             </button>
           </div>
         </div>
-
       </form>
     </div>
   );

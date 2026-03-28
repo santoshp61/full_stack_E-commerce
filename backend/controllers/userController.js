@@ -53,6 +53,21 @@ const registerUser = async (req, res, next) => {
   }
 
 }
+const getUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.body; // userId comes from your authUser middleware
+    const user = await userModel.findById(userId).select("-password"); // Don't send the password!
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, user });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+}
 
 //route for user login
 const loginUser = async (req, res, next) => {
@@ -95,4 +110,4 @@ const adminLogin = async (req, res) => {
     return res.json({ success: false, message: error.message }); // Add 'return'
   }
 }
-export { registerUser, loginUser, adminLogin };
+export { registerUser, loginUser, adminLogin, getUserProfile };

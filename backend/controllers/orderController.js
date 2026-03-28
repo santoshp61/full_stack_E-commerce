@@ -11,24 +11,22 @@ const stripe = new Stripe("sk_test_dummykey");
 
 
 //order using COD
-const placeOrder = async (req, res, next) => {
+const placeOrder = async (req, res) => {
   try {
-    const { userId, address, amount, items } = req.body;
+    const { userId, items, amount, address } = req.body;
 
-    const orderData = { items, address, amount, userId, paymentMethod: "COD", payment: false, date: Date.now(), };
+    // 1. Create the order as usual
+    const newOrder = new orderModel({ userId, items, amount, address, payment: false, date: Date.now() });
+    await newOrder.save();
 
-    const newOrder = new orderModel(orderData)
-    await newOrder.save()
+    // 2. NEW: Save/Update this address for the user "one-time fill"
+    await userModel.findByIdAndUpdate(userId, { address });
 
-    await userModel.findByIdAndUpdate(userId, { cartData: {} });
-
-    res.json({ success: true, message: "Order Placed" })
+    res.json({ success: true, message: "Order Placed and Address Saved" });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message })
-
+    res.json({ success: false, message: error.message });
   }
-};
+}
 
 //place order using stripe
 const placeOrderStripe = async (req, res, next) => {
