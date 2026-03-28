@@ -3,14 +3,14 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { ShopContext } from "../context/ShopContext";
 
-// Ensure this matches your backend port (check your backend terminal!)
-const backendUrl = "http://localhost:5000";
-
 const Login = () => {
   const [currState, setCurrState] = useState('Login');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+
+  // New state for toggling password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const { setToken, navigate, backendUrl } = useContext(ShopContext);
 
@@ -18,12 +18,9 @@ const Login = () => {
     e.preventDefault();
     try {
       let response;
-
       if (currState === 'Sign Up') {
-        // For New Users
         response = await axios.post(backendUrl + '/api/user/register', { name, email, password });
       } else {
-        // For Existing Users
         response = await axios.post(backendUrl + '/api/user/login', { email, password });
       }
 
@@ -31,7 +28,7 @@ const Login = () => {
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
         toast.success(`${currState} Successful!`);
-        navigate('/'); // Send them to home page after login
+        navigate('/');
       } else {
         toast.error(response.data.message);
       }
@@ -48,13 +45,12 @@ const Login = () => {
         <hr className='border-none h-[1.5px] w-8 bg-gray-800' />
       </div>
 
-      {/* Only show Name input if state is Sign Up */}
-      {currState === 'Login' ? '' : (
+      {currState === 'Sign Up' && (
         <input
           onChange={(e) => setName(e.target.value)}
           value={name}
           type="text"
-          className='w-full px-3 py-2 border border-gray-800'
+          className='w-full px-3 py-2 border border-gray-300 rounded focus:border-black outline-none transition-all'
           placeholder='Name'
           required
         />
@@ -64,29 +60,40 @@ const Login = () => {
         onChange={(e) => setEmail(e.target.value)}
         value={email}
         type="email"
-        className='w-full px-3 py-2 border border-gray-800'
+        className='w-full px-3 py-2 border border-gray-300 rounded focus:border-black outline-none transition-all'
         placeholder='Email'
         required
       />
-      <input
-        onChange={(e) => setPassword(e.target.value)}
-        value={password}
-        type="password"
-        className='w-full px-3 py-2 border border-gray-800'
-        placeholder='Password'
-        required
-      />
 
-      <div className='w-full flex justify-between text-sm mt-[-8px]'>
-        <p className='cursor-pointer'>Forgot your password?</p>
+      {/* --- IMPROVED PASSWORD FIELD --- */}
+      <div className="relative w-full">
+        <input
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          type={showPassword ? "text" : "password"}
+          className='w-full px-3 py-2 border border-gray-300 rounded focus:border-black outline-none transition-all'
+          placeholder='Password'
+          required
+        />
+        {/* Toggle Button */}
+        <p
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold cursor-pointer text-gray-400 hover:text-black uppercase select-none"
+        >
+          {showPassword ? "Hide" : "Show"}
+        </p>
+      </div>
+
+      <div className='w-full flex justify-between text-xs mt-[-4px] text-gray-500'>
+        <p className='cursor-pointer hover:text-black transition-colors'>Forgot your password?</p>
         {
           currState === 'Login'
-            ? <p onClick={() => setCurrState('Sign Up')} className='cursor-pointer'>Create account</p>
-            : <p onClick={() => setCurrState('Login')} className='cursor-pointer'>Login Here</p>
+            ? <p onClick={() => { setCurrState('Sign Up'); setShowPassword(false) }} className='cursor-pointer hover:text-black font-medium underline'>Create account</p>
+            : <p onClick={() => { setCurrState('Login'); setShowPassword(false) }} className='cursor-pointer hover:text-black font-medium underline'>Login Here</p>
         }
       </div>
 
-      <button className='bg-black text-white font-light px-8 py-2 mt-4'>
+      <button className='bg-black text-white font-light px-10 py-2.5 mt-4 rounded-sm active:scale-95 transition-all shadow-md'>
         {currState === 'Login' ? 'Sign In' : 'Sign Up'}
       </button>
     </form>
