@@ -21,7 +21,7 @@ const LatestCollections = () => {
         </div>
 
         <p className='w-full max-w-2xl m-auto text-xs sm:text-sm text-gray-500 leading-relaxed font-light'>
-          Discover the freshest trends straight from <span className="text-black font-semibold">ShopEase</span>.
+          Discover the freshest trends straight from <span className="text-black font-semibold">NAA NAA</span>.
           High-quality fabrics and modern cuts designed to keep your wardrobe ahead of the curve.
         </p>
       </div>

@@ -21,7 +21,7 @@ const BestSeller = () => {
 
         <p className='w-full max-w-2xl m-auto text-xs sm:text-sm text-gray-500 leading-relaxed'>
           Our most loved pieces, handpicked by our community. These trending styles
-          from <span className="text-black font-medium underline decoration-orange-500">ShopEase</span> are moving fast.
+          from <span className="text-black font-medium underline decoration-orange-500">NAA NAA</span> are moving fast.
         </p>
       </div>
 

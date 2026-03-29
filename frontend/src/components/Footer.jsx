@@ -10,7 +10,7 @@ const Footer = () => {
         <div>
           <img className='mb-5 w-32' src={assets.logo} alt='logo' />
           <p className='w-full md:w-2/3 text-gray-600'>
-            Stay connected with ShopEase Clothes for the latest trends, exclusive
+            Stay connected with NAA NAA Clothes for the latest trends, exclusive
             offers, and style inspiration. Follow us on social media and
             subscribe to our newsletter for updates and special promotions.
           </p>
@@ -44,8 +44,8 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="mailto:shopease@gmail.com" className="hover:text-black transition-colors">
-                shopease@gmail.com
+              <a href="mailto:NAANAA@gmail.com" className="hover:text-black transition-colors">
+                NAANAA@gmail.com
               </a>
             </li>
           </ul>
@@ -55,7 +55,7 @@ const Footer = () => {
       <div className=''>
         <hr className="border-gray-200" />
         <p className='py-5 text-sm text-center text-gray-500'>
-          Copyright {new Date().getFullYear()} Shopease - All Right Reserved.
+          Copyright {new Date().getFullYear()} NAA NAA - All Right Reserved.
         </p>
       </div>
     </footer>
