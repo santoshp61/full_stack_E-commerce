@@ -22,10 +22,10 @@ const Contact = () => {
             Thamel,Kathmandu<br /> On Main Road
           </p>
           <p className='text-gray-600'>
-            Tel:(01) 123456 <br /> Email: shopease@gmail.com
-          </p>
+            Tel:(01) 123456 <br /> Email: NAA NAA @gmail.com
+          </p>≥
           <p className='font-semibold text-xl text-gray-600'>
-            Careers at ShopEase
+            Careers at NAA NAA
           </p>
           <p className='text-gray-500'>
             Learn more about our teams and job openings.
