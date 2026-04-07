@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 
 const PlaceOrder = () => {
   const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext);
+
+  // Defaulting to cod and removing the toggle logic
   const [method, setMethod] = useState("cod");
 
   const [formData, setFormData] = useState({
@@ -19,7 +21,6 @@ const PlaceOrder = () => {
     phone: "",
   });
 
-  // Fetch saved address on load
   useEffect(() => {
     const fetchUserAddress = async () => {
       if (!token) return;
@@ -68,32 +69,17 @@ const PlaceOrder = () => {
         amount: getCartAmount() + delivery_fee,
       };
 
-      // Handle different payment methods
-      switch (method) {
-        case "cod":
-          const res = await axios.post(backendUrl + "/api/order/place", orderData, { headers: { token } });
-          if (res.data.success) {
-            setCartItems({});
-            navigate("/orders");
-            toast.success("Order Placed! Address saved.");
-          } else {
-            toast.error(res.data.message);
-          }
-          break;
+      // Simplified: Only handling COD now
+      const res = await axios.post(backendUrl + "/api/order/place", orderData, { headers: { token } });
 
-        case 'stripe':
-          const stripe = await axios.post(backendUrl + "/api/order/stripe", orderData, { headers: { token } });
-          if (stripe.data.success) {
-            const { session_url } = stripe.data;
-            window.location.replace(session_url);
-          } else {
-            toast.error(stripe.data.message);
-          }
-          break;
-
-        default:
-          break;
+      if (res.data.success) {
+        setCartItems({});
+        navigate("/orders");
+        toast.success("Order Placed Successfully!");
+      } else {
+        toast.error(res.data.message);
       }
+
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -105,6 +91,7 @@ const PlaceOrder = () => {
       <form onSubmit={onSubmitHandler} className='max-w-[1100px] mx-auto flex flex-col lg:flex-row justify-between gap-6 pt-10 px-4'>
 
         <div className='flex-1 flex flex-col gap-6'>
+          {/* Delivery Info Section */}
           <div className="bg-white p-6 rounded shadow-sm border border-gray-100">
             <div className='mb-6'>
               <Title text1={"DELIVERY"} text2={"INFORMATION"} />
@@ -131,31 +118,24 @@ const PlaceOrder = () => {
             </div>
           </div>
 
+          {/* Payment Method Section (Stripe Removed) */}
           <div className="bg-white p-6 rounded shadow-sm border border-gray-100">
             <div className="mb-6">
               <Title text1={"PAYMENT"} text2={"METHOD"} />
             </div>
 
             <div className='flex flex-col sm:flex-row gap-4'>
-              {/* Stripe Option */}
-              <div onClick={() => setMethod("stripe")} className={`flex items-center gap-4 border p-3 px-4 cursor-pointer rounded transition-all flex-1 ${method === "stripe" ? "border-orange-500 bg-orange-50" : "hover:border-gray-400"}`}>
-                <div className={`min-w-4 h-4 border-2 rounded-full flex items-center justify-center ${method === "stripe" ? "border-orange-500" : "border-gray-300"}`}>
-                  {method === "stripe" && <div className="w-2 h-2 bg-orange-500 rounded-full"></div>}
+              <div className="flex items-center gap-4 border border-orange-500 bg-orange-50 p-3 px-4 rounded w-full">
+                <div className="min-w-4 h-4 border-2 border-orange-500 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                 </div>
-                <img className='h-5' src={assets.stripe_logo} alt='stripe' />
-              </div>
-
-              {/* COD Option */}
-              <div onClick={() => setMethod("cod")} className={`flex items-center gap-4 border p-3 px-4 cursor-pointer rounded transition-all flex-1 ${method === "cod" ? "border-orange-500 bg-orange-50" : "hover:border-gray-400"}`}>
-                <div className={`min-w-4 h-4 border-2 rounded-full flex items-center justify-center ${method === "cod" ? "border-orange-500" : "border-gray-300"}`}>
-                  {method === "cod" && <div className="w-2 h-2 bg-orange-500 rounded-full"></div>}
-                </div>
-                <p className='text-gray-600 text-xs font-bold uppercase'>Cash on Delivery</p>
+                <p className='text-gray-600 text-xs font-bold uppercase'>Cash on Delivery (Only Available Option)</p>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Order Summary Section */}
         <div className='w-full lg:w-[380px]'>
           <div className="bg-white p-6 rounded shadow-sm border border-gray-100 sticky top-20">
             <h2 className="text-lg font-medium text-gray-800 mb-6 border-b pb-4">Order Summary</h2>
